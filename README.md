@@ -1,66 +1,80 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Section 5: Project #3 - Events Management App (REST API)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is part of **Section 5** of the course, focusing on building a **RESTful API** for an **Event Management Application** using **Laravel 11**. The goal of this project is to create a fully functional API that can handle the creation, management, and deletion of events, along with the ability to register attendees, and manage their data.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Authentication & Authorization**: Users can register, log in, and manage events. Authorization is handled using **Laravel Sanctum** for token-based authentication.
+- **Event Management**: Allows users to create, read, update, and delete events.
+- **Attendee Management**: Users can add and remove attendees for specific events.
+- **Rate Limiting**: Implemented rate limiting using Laravel’s built-in tools to control the number of requests a user can make in a given time period.
+- **Validation**: Input validation is implemented for creating and updating events and attendees, ensuring that the data is correctly formatted.
+- **CRUD Operations**: The app allows performing Create, Read, Update, and Delete operations for events and attendees using a RESTful approach.
+- **Throttling & Rate Limiting**: Ensures the API is protected from abuse by limiting the number of requests a user can make per minute.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tools and Technologies
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laravel 11**: The PHP framework used to build the API.
+- **Sanctum**: For API token authentication.
+- **Rate Limiting**: Using Laravel’s `RateLimiter` for controlling API usage.
+- **MySQL**: Database used to store event and attendee data.
+- **Postman**: For testing and interacting with the API endpoints.
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Prerequisites
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Before running this application, make sure you have the following installed:
+- **PHP 8.x** or above
+- **Composer**
+- **MySQL** or another database
+- **Laravel 11** 
+- **Postman** 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## **Setup Instructions**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ernest-salas-bauza/EventsManagementApp.git 
+   ```
+2. Install dependencies:
+   ```bash
+   composer install
+   ```
+3. Set up the `.env` file for database configuration and generate the application key:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+4. Run migrations to create database tables:
+   ```bash
+   php artisan migrate --seed
+   ```
+5. Serve the application locally:
+   ```bash
+   php artisan serve
+   ```
+6. Access the application in your browser at `http://localhost:8000`.
 
-## Laravel Sponsors
+## Endpoints
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Authentication
+- **POST** `/api/login` - User login (Returns an API token).
+- **POST** `/api/register` - User registration.
 
-### Premium Partners
+### Events
+- **GET** `/api/events` - List all events.
+- **GET** `/api/events/{id}` - Show a specific event.
+- **POST** `/api/events` - Create a new event.
+- **PUT** `/api/events/{id}` - Update an event.
+- **DELETE** `/api/events/{id}` - Delete an event.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Attendees
+- **POST** `/api/events/{event_id}/attendees` - Add an attendee to an event.
+- **DELETE** `/api/events/{event_id}/attendees/{attendee_id}` - Remove an attendee from an event.
 
-## Contributing
+### Rate Limiting
+The API uses rate limiting to restrict users to a set number of requests per minute. By default, each user is allowed **60 requests per minute**. You can adjust this limit in `AppServiceProvider.php`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Testing with Postman
+You can test the API using Postman. Import the Postman collection available in the repository to get started with testing all the endpoints.
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
