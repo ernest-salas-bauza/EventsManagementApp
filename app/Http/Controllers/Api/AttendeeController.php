@@ -8,31 +8,40 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Models\Attendee;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AttendeeController extends Controller
 {
     use CanLoadRelationships;
 
-    private  $relations = ['user'];
-    /**
-     * Display a listing of the resource.
-     */
+    private array $relations = ['user'];
+
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:sanctum')->except(['index', 'show', 'update']);
+    //     $this->middleware('throttle:api')
+    //         ->only(['store', 'destroy']);
+    //     $this->authorizeResource(Attendee::class, 'attendee');
+    // }
+
     public function index(Event $event)
     {
-        $attendees = $this->loadRelationships($event->attendees()->latest());
+        Gate::authorize('viewAny', $event);
+        $attendees = $this->loadRelationships(
+            $event->attendees()->latest()
+        );
 
-        return AttendeeResource::collection($attendees->paginate());
+        return AttendeeResource::collection(
+            $attendees->paginate()
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Event $event)
     {
+        Gate::authorize('create', Attendee::class);
         $attendee = $this->loadRelationships(
-
             $event->attendees()->create([
-                'user_id' => 1,
+                'user_id' => $request->user()->id
             ])
         );
 
@@ -44,22 +53,18 @@ class AttendeeController extends Controller
      */
     public function show(Event $event, Attendee $attendee)
     {
-        return new AttendeeResource($this->loadRelationships($attendee));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        Gate::authorize('view', $attendee);
+        return new AttendeeResource(
+            $this->loadRelationships($attendee)
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $event, Attendee $attendee)
+    public function destroy(Event $event, Attendee $attendee)
     {
+        Gate::authorize('delete', $attendee);
         $attendee->delete();
 
         return response(status: 204);
