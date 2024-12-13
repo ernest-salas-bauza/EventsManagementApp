@@ -32,13 +32,6 @@ class AttendeePolicy
         return true;
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Attendee $attendee): bool
     {
         return $user->id === $attendee->user->id || $user->id === $attendee->user_id;
@@ -51,8 +44,5 @@ class AttendeePolicy
     {
         return $user->id === $attendee->user->id || $user->id === $attendee->user_id;
     }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
 }
+
